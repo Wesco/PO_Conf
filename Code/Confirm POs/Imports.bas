@@ -1,12 +1,10 @@
 Attribute VB_Name = "Imports"
 Option Explicit
 
-Sub ImportPOList()
+Sub ImportPOList(Branch)
     Dim Path As String
-    Dim Branch As String
     Dim PrevDispAlert As Boolean
     
-    Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
     Path = "\\br3615gaps\gaps\PO Conf\" & Branch & "-POList.csv"
     PrevDispAlert = Application.DisplayAlerts
     
