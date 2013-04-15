@@ -11,7 +11,7 @@ Sub FilterPOList()
     TotalRows = ActiveSheet.UsedRange.Rows.Count
     
     'Add promise dates
-    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=Trim(VLOOKUP(A1,'473'!C:Z,24,FALSE))"
+    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:Z,24,FALSE)),"""")"
     [B1].AutoFill Destination:=Range(Cells(1, 2), Cells(TotalRows, 2))
     Range(Cells(1, 2), Cells(TotalRows, 2)).Value = Range(Cells(1, 2), Cells(TotalRows, 2)).Value
     Range(Cells(1, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
@@ -31,6 +31,31 @@ Sub FilterPOList()
     ActiveSheet.ShowAllData
     Range("A:B").AutoFilter Field:=2, Criteria1:="<>"
     ActiveSheet.Cells.Delete
+    
+    PrevSheet.Select
+End Sub
+
+Sub CreatePOConf()
+    Dim PrevSheet As Worksheet
+    Dim TotalRows As Long
+    
+    Set PrevSheet = ActiveSheet
+    
+    Sheets("PO Conf").Select
+    TotalRows = ActiveSheet.UsedRange.Rows.Count
+    
+    'Add Column Headers
+    [B1].Value = "Created"
+    [C1].Value = "Status"
+    [D1].Value = "Supplier #"
+    [E1].Value = "Supplier Name"
+    [F1].Value = "Contact"
+    
+    'Created
+    [B2].Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:J,8,FALSE)),"""")"
+    [B2].AutoFill Destination:=Range(Cells(2, 2), Cells(TotalRows, 2))
+    Range(Cells(2, 2), Cells(TotalRows, 2)).Value = Range(Cells(2, 2), Cells(TotalRows, 2)).Value
+    Range(Cells(2, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
     
     PrevSheet.Select
 End Sub
