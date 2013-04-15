@@ -209,7 +209,7 @@ Sub ImportGaps()
                      Parameters:="", _
                      ExecutionTime:=Timer - StartTime, _
                      Result:="Failed - User Aborted"
-            ERR.Raise 18
+            Err.Raise 18
         End If
     Else
         MsgBox Prompt:="Gaps could not be found.", Title:="Gaps not found"
@@ -218,7 +218,7 @@ Sub ImportGaps()
                  Parameters:="", _
                  ExecutionTime:=Timer - StartTime, _
                  Result:="Failed - Gaps not found"
-        ERR.Raise 53
+        Err.Raise 53
     End If
 
     Application.DisplayAlerts = True
@@ -341,7 +341,7 @@ Sub UserImportFile(DestRange As Range, DelFile As Boolean)
                  ExecutionTime:=Timer - StartTime, _
                  Result:="Failed - User Aborted"
         Sheets("Info").Select
-        ERR.Raise 18
+        Err.Raise 18
     End If
 
 End Sub
@@ -494,7 +494,7 @@ Sub DeleteFile(FileName As String, Optional LogEntry As Boolean = False)
 File_Error:
     If LogEntry = True Then
         FillInfo FunctionName:="DeleteFile", _
-                 Result:="Err #: " & ERR.Number
+                 Result:="Err #: " & Err.Number
     End If
 End Sub
 
@@ -618,7 +618,7 @@ Sub Import117byISN(RepType As ReportType, Destination As Range, Optional ByVal I
     Else
         If ISN = "" Then
             FillInfo "Import117byISN", "Failed - User Aborted", Parameters:="ReportType: " & ReportTypeText(RepType)
-            ERR.Raise 53
+            Err.Raise 53
         End If
     End If
 
@@ -655,7 +655,7 @@ Sub Import117byISN(RepType As ReportType, Destination As Range, Optional ByVal I
         End If
     Else
         FillInfo "Import117byISN", "Failed - Missing ISN", Parameters:="ReportType: " & ReportTypeText(RepType)
-        ERR.Raise 18
+        Err.Raise 18
     End If
 
 End Sub
@@ -690,7 +690,7 @@ Sub Import473(Destination As Range)
                  Parameters:="Destination: " & Destination.Address(False, False), _
                  Result:="Failed - File not found"
         MsgBox Prompt:="473 report not found."
-        ERR.Raise 18
+        Err.Raise 18
     End If
 
 End Sub
