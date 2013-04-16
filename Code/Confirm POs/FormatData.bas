@@ -46,14 +46,12 @@ Sub CreatePOConf()
     
     'Add Column Headers
     [B1].Value = "Created"
-    [C1].Value = "Status"
-    [D1].Value = "Supplier #"
-    [E1].Value = "Supplier Name"
-    [F1].Value = "Contact"
+    [C1].Value = "Supplier #"
+    [D1].Value = "Supplier Name"
+    [E1].Value = "Contact"
     
     'Created
-    [B2].Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:J,8,FALSE)),"""")"
-    [B2].AutoFill Destination:=Range(Cells(2, 2), Cells(TotalRows, 2))
+    Range(Cells(2, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:J,8,FALSE)),"""")"
     Range(Cells(2, 2), Cells(TotalRows, 2)).Value = Range(Cells(2, 2), Cells(TotalRows, 2)).Value
     Range(Cells(2, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
     
