@@ -55,6 +55,8 @@ Sub CreatePOConf()
     Range(Cells(2, 2), Cells(TotalRows, 2)).Value = Range(Cells(2, 2), Cells(TotalRows, 2)).Value
     Range(Cells(2, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
     
+    
+    
     PrevSheet.Select
 End Sub
 
