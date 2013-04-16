@@ -11,8 +11,8 @@ Sub FilterPOList()
     TotalRows = ActiveSheet.UsedRange.Rows.Count
     
     'Add promise dates
-    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:Z,24,FALSE)),"""")"
-    [B1].AutoFill Destination:=Range(Cells(1, 2), Cells(TotalRows, 2))
+    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:Z,24,FALSE)),""History"")"
+    '[B1].AutoFill Destination:=Range(Cells(1, 2), Cells(TotalRows, 2))
     Range(Cells(1, 2), Cells(TotalRows, 2)).Value = Range(Cells(1, 2), Cells(TotalRows, 2)).Value
     Range(Cells(1, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
     
