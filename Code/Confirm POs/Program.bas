@@ -6,8 +6,9 @@ Sub Main()
 
     Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
 
-    On Error GoTo Import_Err
+    On Error GoTo Branch_Import_Err
     ImportPOList Branch
+    On Error GoTo Fatal_Err:
     Import473 Destination:=ThisWorkbook.Sheets("473").Range("A1")
     On Error GoTo 0
 
@@ -17,7 +18,7 @@ Sub Main()
 
     Exit Sub
 
-Import_Err:
+Branch_Import_Err:
     If ActiveWorkbook.Name <> ThisWorkbook.Name Then
         ActiveWorkbook.Close
     End If
@@ -26,11 +27,11 @@ Import_Err:
         Case 53:
             MsgBox Prompt:=Err.Description, Title:="Error"
         Case 18:
-            MsgBox Prompt:="A branch number was not entered. Macro aborted.", Title:="Error"
+            MsgBox Prompt:="A branch number was not entered.", Title:="Error"
         Case Else:
             MsgBox "Error " & Err.Number & vbCrLf & Err.Description
     End Select
-
+    Clean
     Exit Sub
 
 Fatal_Err:
