@@ -11,8 +11,8 @@ Purchase Order Confirmation Macro
 ### NetTerm Setup
 
 Go to Setup > QuickButton keys...  
-![Quick Button Keys](Images/QuickButtons_1.jpg)  
+![Quick Button Keys](https://raw.github.com/Wesco/PO_Conf/master/Images/QuickButtons_1.jpg)  
 
 Add a label named 473  
 Add 470^M3^M00^MAY36153615YYYYYXY^M as the transmitted key data  
-![Quick Button Data](Images/QuickButtons_1.jpg)
+![Quick Button Data](https://raw.github.com/Wesco/PO_Conf/master/Images/QuickButtons_2.jpg)
