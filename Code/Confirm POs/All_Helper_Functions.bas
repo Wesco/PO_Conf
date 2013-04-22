@@ -9,7 +9,7 @@ Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 'Used when importing 117 to determine the type of report to pull
 Enum ReportType
     DS
-    BO
+    Bo
 End Enum
 
 '---------------------------------------------------------------------------------------
@@ -303,21 +303,23 @@ End Sub
 ' Date : 1/29/2013
 ' Desc : Prompts the user to select a file for import
 '---------------------------------------------------------------------------------------
-Sub UserImportFile(DestRange As Range, DelFile As Boolean)
-    Dim StartTime As Double         'The time this function was started
+Sub UserImportFile(DestRange As Range, Optional DelFile As Boolean = False, Optional ShowAllData As Boolean = False)
     Dim File As String              'Full path to user selected file
     Dim FileDate As String          'Date the file was last modified
     Dim OldDispAlert As Boolean     'Original state of Application.DisplayAlerts
 
     OldDispAlert = Application.DisplayAlerts
-    StartTime = Timer
     File = Application.GetOpenFilename()
 
     Application.DisplayAlerts = False
     If File <> "False" Then
         FileDate = Format(FileDateTime(File), "mm/dd/yy")
         Workbooks.Open File
-
+        If ShowAllData = True Then
+            ActiveSheet.AutoFilter.ShowAllData
+            ActiveSheet.UsedRange.Columns.Hidden = False
+            ActiveSheet.UsedRange.Rows.Hidden = False
+        End If
         ActiveSheet.UsedRange.Copy Destination:=DestRange
         ActiveWorkbook.Close
         ThisWorkbook.Activate
@@ -325,25 +327,10 @@ Sub UserImportFile(DestRange As Range, DelFile As Boolean)
         If DelFile = True Then
             DeleteFile File
         End If
-
-        FillInfo FunctionName:="UserImportFile", _
-                 Parameters:="FileName: " & File, _
-                 FileDate:=FileDate, _
-                 ExecutionTime:=Timer - StartTime, _
-                 Result:="Complete"
-
-        FillInfo FunctionName:="", _
-                 Parameters:="DestRange: " & DestRange.Address(False, False), _
-                 Result:="Complete"
     Else
-        FillInfo FunctionName:="UserImportFile", _
-                 Parameters:="DestRange: " & DestRange.Address(False, False), _
-                 ExecutionTime:=Timer - StartTime, _
-                 Result:="Failed - User Aborted"
-        Sheets("Info").Select
         Err.Raise 18
     End If
-
+    Application.DisplayAlerts = OldDispAlert
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -627,7 +614,7 @@ Sub Import117byISN(RepType As ReportType, Destination As Range, Optional ByVal I
             Case ReportType.DS:
                 FileName = "3615 " & Format(Date, "m-dd-yy") & " DSORDERS.xlsx"
 
-            Case ReportType.BO:
+            Case ReportType.Bo:
                 FileName = "3615 " & Format(Date, "m-dd-yy") & " BACKORDERS.xlsx"
         End Select
 
@@ -681,7 +668,14 @@ Sub Import473(Destination As Range)
         Application.DisplayAlerts = False
         ActiveWorkbook.Close
         Application.DisplayAlerts = AlertStatus
+
+        FillInfo FunctionName:="Import473", _
+                 Parameters:=Destination.Address(False, False), _
+                 Result:="Complete"
     Else
+        FillInfo FunctionName:="Import473", _
+                 Parameters:="Destination: " & Destination.Address(False, False), _
+                 Result:="Failed - File not found"
         MsgBox Prompt:="473 report not found."
         Err.Raise 18
     End If
@@ -695,7 +689,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 Function ReportTypeText(RepType As ReportType) As String
     Select Case RepType
-        Case ReportType.BO:
+        Case ReportType.Bo:
             ReportTypeText = "BO"
         Case ReportType.DS:
             ReportTypeText = "DS"
@@ -723,14 +717,37 @@ End Sub
 ' Date : 4/11/2013
 ' Desc : Returns the column number if a match is found
 '---------------------------------------------------------------------------------------
-Function FindColumn(HeaderText As String) As Integer
+Function FindColumn(HeaderText As String, Optional SearchArea As Range) As Integer
     Dim i As Integer: i = 0
 
-    For i = 1 To ActiveSheet.UsedRange.Columns.Count
-        If Trim(Cells(1, i).Value) = HeaderText Then
+    If TypeName(SearchArea) = Empty Then
+        SearchArea = ActiveSheet.UsedRange
+    End If
+
+    For i = 1 To SearchArea.Columns.Count
+        If Trim(SearchArea.Cells(1, i).Value) = HeaderText Then
             FindColumn = i
             Exit For
         End If
     Next
 End Function
+
+'---------------------------------------------------------------------------------------
+' Proc : ImportSupplierContacts
+' Date : 4/22/2013
+' Desc : Imports the supplier contact master list
+'---------------------------------------------------------------------------------------
+Sub ImportSupplierContacts(Destination As Range)
+    Const sPath As String = "\\br3615gaps\gaps\Contacts\Supplier Contact Master.xlsx"
+    Dim PrevDispAlerts As Boolean
+
+    PrevDispAlerts = Application.DisplayAlerts
+
+    Workbooks.Open sPath
+    ActiveSheet.UsedRange.Copy Destination:=Destination
+    
+    Application.DisplayAlerts = False
+    ActiveWorkbook.Close
+    Application.DisplayAlerts = PrevDispAlerts
+End Sub
 
