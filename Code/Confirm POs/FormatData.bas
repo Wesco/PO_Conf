@@ -50,6 +50,12 @@ Sub CreatePOConf()
     [D1].Value = "Supplier Name"
     [E1].Value = "Contact"
 
+    'Format column headers
+    With Range("B1:E1")
+        .Font.Bold = True
+        .HorizontalAlignment = xlCenter
+    End With
+    
     'Verify that PO numbers can be found on the 473 report
     If Trim(Sheets("473").Range("C1").Value) <> "PO NUMBER" Then
         Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""C1"").Value != ""PO NUMBER""."
@@ -127,13 +133,15 @@ Sub SortPOConf()
                     .Font.Color = -16383844
                 End With
                 'Highlight POs 3-4 days old yellow with brown text
-            Case 3, 4
+            Case 3, 4, 5, 6, 7
                 With Range(Cells(vRng.Row, 1), Cells(vRng.Row, 5))
                     .Interior.Color = 11534335
                     .Font.Color = -16365673
                 End With
         End Select
     Next
+    
+    PrevSheet.Select
 End Sub
 
 Sub Format473()

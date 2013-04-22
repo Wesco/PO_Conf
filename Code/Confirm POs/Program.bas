@@ -9,7 +9,7 @@ Sub Main()
     On Error GoTo Branch_Import_Err
     ImportPOList Branch
     On Error GoTo Fatal_Err
-    Import473 Destination:=ThisWorkbook.Sheets("473").Range("A1")
+    Import473 ThisWorkbook.Sheets("473").Range("A1"), Branch
     On Error GoTo 0
     
     Format473
@@ -20,6 +20,8 @@ Sub Main()
     On Error GoTo Create_PO_Err
     CreatePOConf
     On Error GoTo 0
+    
+    SortPOConf
     
     Exit Sub
 

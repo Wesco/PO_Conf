@@ -652,13 +652,13 @@ End Sub
 ' Date : 4/11/2013
 ' Desc : Imports a 473 report from the current day
 '---------------------------------------------------------------------------------------
-Sub Import473(Destination As Range)
+Sub Import473(Destination As Range, Optional Branch As String = "3615")
     Dim sPath As String
     Dim FileName As String
     Dim AlertStatus As Boolean
 
     FileName = "473 " & Format(Date, "m-dd-yy") & ".xlsx"
-    sPath = "\\br3615gaps\gaps\473 Download\" & FileName
+    sPath = "\\br3615gaps\gaps\" & Branch & " 473 Download\" & FileName
     AlertStatus = Application.DisplayAlerts
 
     If FileExists(sPath) Then
