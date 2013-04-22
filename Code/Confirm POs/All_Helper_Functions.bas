@@ -668,14 +668,7 @@ Sub Import473(Destination As Range, Optional Branch As String = "3615")
         Application.DisplayAlerts = False
         ActiveWorkbook.Close
         Application.DisplayAlerts = AlertStatus
-
-        FillInfo FunctionName:="Import473", _
-                 Parameters:=Destination.Address(False, False), _
-                 Result:="Complete"
     Else
-        FillInfo FunctionName:="Import473", _
-                 Parameters:="Destination: " & Destination.Address(False, False), _
-                 Result:="Failed - File not found"
         MsgBox Prompt:="473 report not found."
         Err.Raise 18
     End If

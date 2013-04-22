@@ -3,7 +3,9 @@ Option Explicit
 
 Sub Main()
     Dim Branch As String
-
+    
+    Application.ScreenUpdating = False
+    
     Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
 
     On Error GoTo Branch_Import_Err
@@ -23,6 +25,7 @@ Sub Main()
     
     SortPOConf
     
+    Application.ScreenUpdating = True
     Exit Sub
 
 Branch_Import_Err:

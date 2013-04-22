@@ -12,7 +12,6 @@ Sub FilterPOList()
 
     'Add promise dates
     Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:Z,24,FALSE)),""History"")"
-    '[B1].AutoFill Destination:=Range(Cells(1, 2), Cells(TotalRows, 2))
     Range(Cells(1, 2), Cells(TotalRows, 2)).Value = Range(Cells(1, 2), Cells(TotalRows, 2)).Value
     Range(Cells(1, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
 
@@ -51,7 +50,7 @@ Sub CreatePOConf()
     [E1].Value = "Contact"
 
     'Format column headers
-    With Range("B1:E1")
+    With Range("A1:E1")
         .Font.Bold = True
         .HorizontalAlignment = xlCenter
     End With
@@ -91,6 +90,8 @@ Sub CreatePOConf()
     Range(Cells(2, 5), Cells(TotalRows, 5)).Formula = "=IFERROR(VLOOKUP(C2,Contacts!A:B,2,FALSE),"""")"
     Range(Cells(2, 5), Cells(TotalRows, 5)).Value = Range(Cells(2, 5), Cells(TotalRows, 5)).Value
 
+    ActiveSheet.UsedRange.Columns.AutoFit
+    
     PrevSheet.Select
 End Sub
 
