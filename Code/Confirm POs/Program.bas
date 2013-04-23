@@ -5,9 +5,8 @@ Sub Main()
     Dim Branch As String
     
     Application.ScreenUpdating = False
-    
     Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
-
+    Clean
     On Error GoTo Branch_Import_Err
     ImportPOList Branch
     On Error GoTo Fatal_Err
@@ -24,6 +23,7 @@ Sub Main()
     On Error GoTo 0
     
     SortPOConf
+    Sheets("PO Conf").Select
     
     Application.ScreenUpdating = True
     Exit Sub
