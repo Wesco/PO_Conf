@@ -7,7 +7,7 @@ ECHO **      Creating Shortcut          **
 ECHO **                                 **
 ECHO *************************************
 ECHO -------------------------------------
-copy "Confirm POs.lnk" %userprofile%\Desktop
+copy "Confirm POs.lnk" "%userprofile%\Desktop"
 ECHO -------------------------------------
 ECHO.
 ECHO.
