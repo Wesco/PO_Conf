@@ -1,24 +1,23 @@
+Function FileExists(ByVal sPath As String) As Boolean
+    'Remove trailing backslash
+    If InStr(Len(sPath), sPath, "\") > 0 Then sPath = Left(sPath, Len(sPath) - 1)
+    'Check to see if the directory exists and return true/false
+    If Dir(sPath, vbDirectory) <> "" Then FileExists = True
+End Function
+
 Public Sub GetPONumber(itm As Outlook.MailItem)
     Dim sPOList As String
     Dim PO As String
+    Dim Branch As String
     Dim FileNumber As Integer
+    Dim Subject As String
 
     FileNumber = FreeFile
-
-    If InStr(itm.Subject, "3605-") Then
-        PO = Replace(itm.Subject, "WESCO International, Inc. PO #3605-", "")
-        sPOList = "\\br3615gaps\gaps\PO Conf\3605-POList.csv"
-    End If
-
-    If InStr(itm.Subject, "3615-") Then
-        PO = Replace(itm.Subject, "WESCO International, Inc. PO #3615-", "")
-        sPOList = "\\br3615gaps\gaps\PO Conf\3615-POList.csv"
-    End If
-
-    If InStr(itm.Subject, "3625-") Then
-        PO = Replace(itm.Subject, "WESCO International, Inc. PO #3625-", "")
-        sPOList = "\\br3615gaps\gaps\PO Conf\3625-POList.csv"
-    End If
+    Subject = itm.Subject
+    If InStr(Subject, "FW: ") Then Subject = Replace(Subject, "FW: ", "")
+    Branch = Left(Replace(Subject, "WESCO International, Inc. PO #", ""), 4)
+    sPOList = "\\br3615gaps\gaps\PO Conf\" & Branch & "-POList.csv"
+    PO = Replace(Subject, "WESCO International, Inc. PO #" & Branch & "-", "")
 
     'Removes FW: from forwarded emails
     If InStr(PO, "FW: ") Then PO = Replace(PO, "FW: ", "")
@@ -32,10 +31,8 @@ Public Sub GetPONumber(itm As Outlook.MailItem)
             Print #FileNumber, PO
             Close FileNumber
 
-            'If an error occurs write the PO number, Date, Time, User, Err Number, and Err description to a log file
-            'and email Tanner Reische the error number and description
         Case Else
-            Open "C:\ErrorLog.csv" For Append Lock Read Write As #FileNumber
+            Open "C:\GetPONumber_ErrorLog.csv" For Append Lock Read Write As #FileNumber
             Print #FileNumber, PO & "," & Date & "," & Time & "," & Environ("username") & "," & Err.Number & "," & Err.Description
             Close FileNumber
     End Select
