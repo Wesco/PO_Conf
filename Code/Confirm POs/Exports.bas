@@ -43,7 +43,7 @@ Sub SendMail()
             PODATE = Format(vRng.Offset(0, -3).Value, "mmm dd, yyyy")
             SupEmail = vRng.Value
 
-            Subject = "Please Confirm PO# 3615-" & PO
+            Subject = "Please Confirm PO# " & Branch & "-" & PO
             Body = "Dear Supplier,<br>" & _
                    "PO# " & Branch & "-" & PO & " was sent on " & PODATE & _
                    ". Please confirm that the order has been received and provide an estimated shipping date.<br>" & _
