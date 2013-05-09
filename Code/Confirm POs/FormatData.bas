@@ -14,24 +14,44 @@ Sub FilterPOList()
     Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:Z,24,FALSE)),""History"")"
     Range(Cells(1, 2), Cells(TotalRows, 2)).Value = Range(Cells(1, 2), Cells(TotalRows, 2)).Value
     Range(Cells(1, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
-
+    
+    'Add Qty Received
+    Range(Cells(1, 3), Cells(TotalRows, 3)).Formula = "=IFERROR(VLOOKUP(A1,'473'!C:AB,26,FALSE),0)"
+    Range(Cells(1, 3), Cells(TotalRows, 3)).Value = Range(Cells(1, 3), Cells(TotalRows, 3)).Value
+    
     'Add column headers
-    Rows(1).Insert
-    [A1].Value = "PO Number"
-    [B1].Value = "Promise Date"
-
+    AddHeaders
+    
     'Show only POs without promise dates
-    Range("A:B").AutoFilter Field:=2, Criteria1:="="
+    ActiveSheet.UsedRange.AutoFilter Field:=2, Criteria1:="="
+    
+    'Show only POs without any received items
+    ActiveSheet.UsedRange.AutoFilter Field:=3, Criteria1:="=0"
 
     'Copy POs without promise dates
     Range("A:A").Copy Destination:=Sheets("PO Conf").Range("A1")
 
-    'Remove all POs with data
+    'Remove all POs with received items
     ActiveSheet.ShowAllData
-    Range("A:B").AutoFilter Field:=2, Criteria1:="<>"
+    ActiveSheet.UsedRange.AutoFilter Field:=3, Criteria1:=">0"
+    ActiveSheet.Cells.Delete
+    
+    'Remove all POs with promise dates
+    AddHeaders
+    ActiveSheet.UsedRange.AutoFilter Field:=2, Criteria1:="<>"
     ActiveSheet.Cells.Delete
 
+    Columns("B:C").Delete
+
     PrevSheet.Select
+End Sub
+
+Sub AddHeaders()
+    'Add column headers
+    Rows(1).Insert
+    [A1].Value = "PO Number"
+    [B1].Value = "Promise Date"
+    [C1].Value = "Received"
 End Sub
 
 Sub CreatePOConf()
