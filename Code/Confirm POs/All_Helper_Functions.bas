@@ -151,7 +151,7 @@ Sub ImportGaps()
     StartTime = Timer
     dt = Date - iCounter
     sPath = "\\br3615gaps\gaps\3615 Gaps Download\" & Format(dt, "yyyy") & "\"
-    sName = "3615 " & Format(dt, "m-dd-yy") & ".xlsx"
+    sName = "3615 " & Format(dt, "yyyy-mm-dd") & ".xlsx"
     FileFound = False
 
     'This error is bypassed so you can determine whether or not the sheet exists
@@ -165,7 +165,7 @@ Sub ImportGaps()
     For iCounter = 0 To 15
         dt = Date - iCounter
         sPath = "\\br3615gaps\gaps\3615 Gaps Download\" & Format(dt, "yyyy") & "\"
-        sName = "3615 " & Format(dt, "m-dd-yy") & ".xlsx"
+        sName = "3615 " & Format(dt, "yyyy-mm-dd") & ".xlsx"
         If FileExists(sPath & sName) Then
             FileFound = True
             Exit For
@@ -612,10 +612,10 @@ Sub Import117byISN(RepType As ReportType, Destination As Range, Optional ByVal I
     If ISN <> "" Then
         Select Case RepType
             Case ReportType.DS:
-                FileName = "3615 " & Format(Date, "m-dd-yy") & " DSORDERS.xlsx"
+                FileName = "3615 " & Format(Date, "yyyy-mm-dd") & " DSORDERS.xlsx"
 
             Case ReportType.Bo:
-                FileName = "3615 " & Format(Date, "m-dd-yy") & " BACKORDERS.xlsx"
+                FileName = "3615 " & Format(Date, "yyyy-mm-dd") & " BACKORDERS.xlsx"
         End Select
 
         sPath = "\\br3615gaps\gaps\3615 117 Report\ByInsideSalesNumber\" & ISN & "\" & FileName
@@ -657,7 +657,7 @@ Sub Import473(Destination As Range, Optional Branch As String = "3615")
     Dim FileName As String
     Dim AlertStatus As Boolean
 
-    FileName = "473 " & Format(Date, "m-dd-yy") & ".xlsx"
+    FileName = "473 " & Format(Date, "yyyy-mm-dd") & ".xlsx"
     sPath = "\\br3615gaps\gaps\" & Branch & " 473 Download\" & FileName
     AlertStatus = Application.DisplayAlerts
 
