@@ -1,9 +1,10 @@
 Attribute VB_Name = "Program"
 Option Explicit
+Public Const VersionNumber As String = "1.0.1"
 
 Sub Main()
     Dim Branch As String
-    
+
     Application.ScreenUpdating = False
     Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
     Clean
@@ -12,19 +13,19 @@ Sub Main()
     On Error GoTo Fatal_Err
     Import473 ThisWorkbook.Sheets("473").Range("A1"), Branch
     On Error GoTo 0
-    
+
     Format473
     FilterPOList
     ExportPOList Branch
     ImportSupplierContacts ThisWorkbook.Sheets("Contacts").Range("A1")
-    
+
     On Error GoTo Create_PO_Err
     CreatePOConf
     On Error GoTo 0
-    
+
     SortPOConf
     Sheets("PO Conf").Select
-    
+
     Application.ScreenUpdating = True
     Exit Sub
 

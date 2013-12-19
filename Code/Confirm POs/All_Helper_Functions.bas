@@ -422,44 +422,26 @@ Sub ExportCode()
 End Sub
 
 '---------------------------------------------------------------------------------------
-' Proc : ImportModule
-' Date : 4/4/2013
-' Desc : Imports a code module into VBProject
+' Proc : AddReferences
+' Date : 3/19/2013
+' Desc : Adds a reference to VBProject
 '---------------------------------------------------------------------------------------
-Sub ImportModule()
-    Dim comp As Variant
-    Dim codeFolder As String
-    Dim FileName As String
-    Dim WkbkPath As String
+Sub AddReference(GUID As String, Major As Integer, Minor As Integer)
+    Dim ID As Variant
+    Dim Ref As Variant
+    Dim Result As Boolean
 
-    'Adds a reference to Microsoft Visual Basic for Applications Extensibility 5.3
-    AddReference "{0002E157-0000-0000-C000-000000000046}", 5, 3
 
-    'Gets the path to this workbook
-    WkbkPath = Left$(ThisWorkbook.fullName, InStr(1, ThisWorkbook.fullName, ThisWorkbook.Name, vbTextCompare) - 1)
-
-    'Gets the path to this workbooks code
-    codeFolder = WkbkPath & "Code\" & Left(ThisWorkbook.Name, Len(ThisWorkbook.Name) - 5) & "\"
-
-    For Each comp In ThisWorkbook.VBProject.VBComponents
-        If comp.Name <> "All_Helper_Functions" Then
-            Select Case comp.Type
-                Case 1
-                    FileName = codeFolder & comp.Name & ".bas"
-                    ThisWorkbook.VBProject.VBComponents.Remove comp
-                    ThisWorkbook.VBProject.VBComponents.Import FileName
-                Case 2
-                    FileName = codeFolder & comp.Name & ".cls"
-                    ThisWorkbook.VBProject.VBComponents.Remove comp
-                    ThisWorkbook.VBProject.VBComponents.Import FileName
-                Case 3
-                    FileName = codeFolder & comp.Name & ".frm"
-                    ThisWorkbook.VBProject.VBComponents.Remove comp
-                    ThisWorkbook.VBProject.VBComponents.Import FileName
-            End Select
+    For Each Ref In ThisWorkbook.VBProject.References
+        If Ref.GUID = GUID And Ref.Major = Major And Ref.Minor = Minor Then
+            Result = True
         End If
     Next
 
+    'References Microsoft Visual Basic for Applications Extensibility 5.3
+    If Result = False Then
+        ThisWorkbook.VBProject.References.AddFromGuid GUID, Major, Minor
+    End If
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -511,85 +493,6 @@ End Function
 Function EndsWith(ByVal InString As String, ByVal TestString As String) As Boolean
     EndsWith = (Right$(InString, Len(TestString)) = TestString)
 End Function
-
-'---------------------------------------------------------------------------------------
-' Proc : AddReferences
-' Date : 3/19/2013
-' Desc : Adds a reference to VBProject
-'---------------------------------------------------------------------------------------
-Sub AddReference(GUID As String, Major As Integer, Minor As Integer)
-    Dim ID As Variant
-    Dim Ref As Variant
-    Dim Result As Boolean
-
-
-    For Each Ref In ThisWorkbook.VBProject.References
-        If Ref.GUID = GUID And Ref.Major = Major And Ref.Minor = Minor Then
-            Result = True
-        End If
-    Next
-
-    'References Microsoft Visual Basic for Applications Extensibility 5.3
-    If Result = False Then
-        ThisWorkbook.VBProject.References.AddFromGuid GUID, Major, Minor
-    End If
-End Sub
-
-'---------------------------------------------------------------------------------------
-' Proc : RemoveReferences
-' Date : 3/19/2013
-' Desc : Removes a reference from VBProject
-'---------------------------------------------------------------------------------------
-Sub RemoveReference(GUID As String, Major As Integer, Minor As Integer)
-    Dim Ref As Variant
-
-    For Each Ref In ThisWorkbook.VBProject.References
-        If Ref.GUID = GUID And Ref.Major = Major And Ref.Minor = Minor Then
-            Application.VBE.ActiveVBProject.References.Remove Ref
-        End If
-    Next
-End Sub
-
-'---------------------------------------------------------------------------------------
-' Proc : ShowReferences
-' Date : 4/4/2013
-' Desc : Lists all VBProject references
-'---------------------------------------------------------------------------------------
-Sub ShowReferences()
-    Dim i As Variant
-    Dim n As Integer
-
-    ThisWorkbook.Activate
-    On Error GoTo SHEET_EXISTS
-    Sheets("VBA References").Select
-    ActiveSheet.Cells.Delete
-    On Error GoTo 0
-
-    [A1].Value = "Name"
-    [B1].Value = "Description"
-    [C1].Value = "GUID"
-    [D1].Value = "Major"
-    [E1].Value = "Minor"
-
-    For i = 1 To ThisWorkbook.VBProject.References.Count
-        n = i + 1
-        With ThisWorkbook.VBProject.References(i)
-            Cells(n, 1).Value = .Name
-            Cells(n, 2).Value = .Description
-            Cells(n, 3).Value = .GUID
-            Cells(n, 4).Value = .Major
-            Cells(n, 5).Value = .Minor
-        End With
-    Next
-    Columns.AutoFit
-
-    Exit Sub
-
-SHEET_EXISTS:
-    ThisWorkbook.Sheets.Add After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count), Count:=1
-    ActiveSheet.Name = "VBA References"
-    Resume Next
-End Sub
 
 '---------------------------------------------------------------------------------------
 ' Proc : Import117byISN
@@ -738,105 +641,8 @@ Sub ImportSupplierContacts(Destination As Range)
 
     Workbooks.Open sPath
     ActiveSheet.UsedRange.Copy Destination:=Destination
-    
+
     Application.DisplayAlerts = False
     ActiveWorkbook.Close
     Application.DisplayAlerts = PrevDispAlerts
-End Sub
-
-'---------------------------------------------------------------------------------------
-' Proc : CheckForUpdates
-' Date : 4/24/2013
-' Desc : Checks to see if the macro is up to date
-'---------------------------------------------------------------------------------------
-Sub CheckForUpdates(URL As String)
-    Dim Ver As String
-    Dim LocalVer As String
-    Dim Path As String
-    Dim LocalPath As String
-    Dim FileNum As Integer
-    Dim RegEx As Variant
-
-    Set RegEx = CreateObject("VBScript.RegExp")
-    Ver = Left(DownloadTextFile(URL), 5)
-    RegEx.Pattern = "[0-9]\.[0-0]\.[0-9]"
-    Path = GetWorkbookPath & "Version.txt"
-    FileNum = FreeFile
-
-    Open Path For Input As #FileNum
-    Line Input #FileNum, LocalVer
-    Close FileNum
-
-    If RegEx.Test(Ver) Then
-        If CInt(Replace(Ver, ".", "")) > CInt(Replace(LocalVer, ".", "")) Then
-            MsgBox Prompt:="An update is available. Please close the macro and get the latest version!", Title:="Update Available"
-        End If
-    End If
-End Sub
-
-'---------------------------------------------------------------------------------------
-' Proc : DownloadTextFile
-' Date : 4/25/2013
-' Desc : Returns the contents of a text file from a website
-'---------------------------------------------------------------------------------------
-Function DownloadTextFile(URL As String) As String
-    Dim success As Boolean
-    Dim responseText As String
-    Dim oHTTP As Variant
-
-    Set oHTTP = CreateObject("WinHttp.WinHttpRequest.5.1")
-
-    oHTTP.Open "GET", URL, False
-    oHTTP.Send
-    success = oHTTP.WaitForResponse()
-
-    If Not success Then
-        DownloadTextFile = ""
-        Exit Function
-    End If
-
-    responseText = oHTTP.responseText
-    Set oHTTP = Nothing
-
-    DownloadTextFile = responseText
-End Function
-
-'---------------------------------------------------------------------------------------
-' Proc : IncrementVersion
-' Date : 4/24/2013
-' Desc : Increments the macros version number
-'---------------------------------------------------------------------------------------
-Sub IncrementVersion()
-    Dim Path As String
-    Dim Ver As Variant
-    Dim FileNum As Integer
-    Dim i As Integer
-
-    Path = GetWorkbookPath & "Version.txt"
-    FileNum = FreeFile
-
-    If FileExists(Path) = True Then
-        Open Path For Input As #FileNum
-        Line Input #FileNum, Ver
-        Close FileNum
-
-        Ver = Replace(Ver, ".", "")
-
-        'If version gets to 9.9.9, start over at version 1.0.0
-        If Ver = 999 Then
-            Ver = 100
-        Else
-            Ver = Ver + 1
-        End If
-
-        Ver = Left(Ver, 1) & "." & Mid(Ver, 2, 1) & "." & Right(Ver, 1)
-
-        Open Path For Output As #FileNum
-        Print #FileNum, Ver
-        Close #FileNum
-    Else
-        Open Path For Output As #FileNum
-        Print #FileNum, "1.0.0"
-        Close #FileNum
-    End If
 End Sub
