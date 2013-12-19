@@ -95,8 +95,9 @@ Sub CheckForUpdates(URL As String, LocalVer As String, Optional RepoName As Stri
     Dim RegEx As Variant
 
     Set RegEx = CreateObject("VBScript.RegExp")
+    
+    'Try to get the contents of the text file
     Ver = DownloadTextFile(URL)
-    Ver = Ver & vbCrLf
     Ver = Replace(Ver, vbLf, "")
     Ver = Replace(Ver, vbCr, "")
     RegEx.Pattern = "^[0-9]+\.[0-9]+\.[0-9]+$"
