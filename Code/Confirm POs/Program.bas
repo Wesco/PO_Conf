@@ -1,6 +1,7 @@
 Attribute VB_Name = "Program"
 Option Explicit
 Public Const VersionNumber As String = "1.0.1"
+Public Const RepositoryName As String = "PO_Conf"
 
 Sub Main()
     Dim Branch As String
@@ -54,10 +55,10 @@ End Sub
 
 Sub Clean()
     Dim s As Variant
-    
+
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
-    
+
     For Each s In ThisWorkbook.Sheets
         If s.Name <> "Macro" Then
             s.Select
@@ -65,10 +66,10 @@ Sub Clean()
             s.Cells.Delete
         End If
     Next
-    
+
     Sheets("Macro").Select
     Range("C7").Select
-    
+
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
 End Sub
