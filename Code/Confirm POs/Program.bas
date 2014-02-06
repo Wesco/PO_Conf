@@ -28,6 +28,8 @@ Sub Main()
     Sheets("PO Conf").Select
 
     Application.ScreenUpdating = True
+    
+    MsgBox "Complete!"
     Exit Sub
 
 Branch_Import_Err:
@@ -54,8 +56,12 @@ Fatal_Err:
 End Sub
 
 Sub Clean()
+    Dim PrevDispAlert As Boolean
+    Dim PrevScrnUpdat As Boolean
     Dim s As Variant
 
+    PrevDispAlert = Application.DisplayAlerts
+    PrevScrnUpdat = Application.ScreenUpdating
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
 
@@ -64,12 +70,13 @@ Sub Clean()
             s.Select
             s.AutoFilterMode = False
             s.Cells.Delete
+            s.Range("A1").Select
         End If
     Next
 
     Sheets("Macro").Select
     Range("C7").Select
 
-    Application.DisplayAlerts = True
-    Application.ScreenUpdating = True
+    Application.DisplayAlerts = PrevDispAlert
+    Application.ScreenUpdating = PrevScrnUpdat
 End Sub
