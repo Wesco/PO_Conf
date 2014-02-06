@@ -52,7 +52,7 @@ Sub SendMail()
                    "Thanks in advance for your help!<br>" & _
                    "<br>" & _
                    "<span style='font-size:8.0pt;font-family:""Arial"",""sans-serif""'>" & _
-                   UserEmail & " | office: 704-393-6629 | fax: 704-393-6645<br>" & _
+                   UserEmail & " | office: 704-393-6636 | fax: 704-393-6645<br>" & _
                    "<b>WESCO Distribution<br>" & _
                    "5521 Lakeview Road, Suite W, Charlotte, NC 28269</b>" & _
                    "</span>"
