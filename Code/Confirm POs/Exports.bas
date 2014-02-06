@@ -32,11 +32,31 @@ Sub SendMail()
     Dim SupEmail As String
 
     Sheets("PO Conf").Select
-    
     UserEmail = Environ("username") & "@wesco.com"
     Branch = Sheets("473").Range("A2")
     TotalRows = ActiveSheet.UsedRange.Rows.Count
 
+    'Sort by Supplier
+    If Range("C1").Value <> "Supplier #" Then
+        MsgBox "Mail cannot be sent!", vbOKOnly
+    End If
+
+    With ActiveSheet.Sort
+        .SortFields.Clear
+        .SortFields.Add Key:=Range("C1"), _
+                        SortOn:=xlSortOnValues, _
+                        Order:=xlAscending, _
+                        DataOption:=xlSortNormal
+        .SetRange Range("A1:E" & TotalRows)
+        .Header = xlYes
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+    
+    
+    
     For Each vRng In Range(Cells(2, 5), Cells(TotalRows, 5))
         If vRng.Value <> "" Then
             PO = Right(String(6, "0") & vRng.Offset(0, -4).Value, "6")
