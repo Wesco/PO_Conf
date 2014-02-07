@@ -100,6 +100,8 @@ Sub SendMail()
             Body = ""
         End If
     Next
+    
+    MsgBox "Complete!"
 End Sub
 
 Private Function EmailHeader()

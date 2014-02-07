@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PO Conf"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "Wesco Distribution, Inc."
 #define MyAppURL "http://www.github.com/wesco"
 #define MyAppExeName "Confirm POs.xlsm"
@@ -25,6 +25,7 @@ AllowNoIcons=yes
 OutputBaseFilename=Setup
 Compression=lzma
 SolidCompression=yes
+OutputDir=Output
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
