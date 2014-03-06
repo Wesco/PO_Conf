@@ -7,24 +7,23 @@ Sub Main()
     Dim Branch As String
 
     Application.ScreenUpdating = False
-    Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
     
     On Error GoTo Main_Err
+    
+    Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
     Import473 ThisWorkbook.Sheets("473").Range("A1"), Branch
-    On Error GoTo 0
-
     ImportSupplierContacts ThisWorkbook.Sheets("Contacts").Range("A1")
-
-    On Error GoTo Main_Err
     CreatePOConf
-    On Error GoTo 0
+
 
     SortPOConf
     Sheets("PO Conf").Select
     Clean
     Application.ScreenUpdating = True
-    
+
     MsgBox "Complete!"
+    
+    On Error GoTo 0
     Exit Sub
 
 Main_Err:

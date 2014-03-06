@@ -1,59 +1,6 @@
 Attribute VB_Name = "FormatData"
 Option Explicit
 
-Sub FilterPOList()
-    Dim TotalRows As Long
-    Dim PrevSheet As Worksheet
-
-    Set PrevSheet = ActiveSheet
-    Sheets("PO List").Select
-    Range("A:A").RemoveDuplicates 1, xlNo
-    TotalRows = ActiveSheet.UsedRange.Rows.Count
-
-    'Add promise dates
-    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:AC,27,FALSE)),""History"")"
-    Range(Cells(1, 2), Cells(TotalRows, 2)).Value = Range(Cells(1, 2), Cells(TotalRows, 2)).Value
-    Range(Cells(1, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
-    
-    'Add Qty Received
-    Range(Cells(1, 3), Cells(TotalRows, 3)).Formula = "=IFERROR(VLOOKUP(A1,'473'!C:AE,29,FALSE),0)"
-    Range(Cells(1, 3), Cells(TotalRows, 3)).Value = Range(Cells(1, 3), Cells(TotalRows, 3)).Value
-    
-    'Add column headers
-    AddHeaders
-    
-    'Show only POs without promise dates
-    ActiveSheet.UsedRange.AutoFilter Field:=2, Criteria1:="="
-    
-    'Show only POs without any received items
-    ActiveSheet.UsedRange.AutoFilter Field:=3, Criteria1:="=0"
-
-    'Copy POs without promise dates
-    Range("A:A").Copy Destination:=Sheets("PO Conf").Range("A1")
-
-    'Remove all POs with received items
-    ActiveSheet.ShowAllData
-    ActiveSheet.UsedRange.AutoFilter Field:=3, Criteria1:=">0"
-    ActiveSheet.Cells.Delete
-    
-    'Remove all POs with promise dates
-    AddHeaders
-    ActiveSheet.UsedRange.AutoFilter Field:=2, Criteria1:="<>"
-    ActiveSheet.Cells.Delete
-
-    Columns("B:C").Delete
-
-    PrevSheet.Select
-End Sub
-
-Sub AddHeaders()
-    'Add column headers
-    Rows(1).Insert
-    [A1].Value = "PO Number"
-    [B1].Value = "Promise Date"
-    [C1].Value = "Received"
-End Sub
-
 Sub CreatePOConf()
     Dim PrevSheet As Worksheet
     Dim TotalRows As Long
