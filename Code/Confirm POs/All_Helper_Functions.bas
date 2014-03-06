@@ -1,135 +1,11 @@
 Attribute VB_Name = "All_Helper_Functions"
 Option Explicit
-'Pauses for x# of milliseconds
-'Used for email function to prevent
-'all emails from being sent at once
-'Example: "Sleep 1500" will pause for 1.5 seconds
-Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
 'Used when importing 117 to determine the type of report to pull
 Enum ReportType
     DS
     Bo
 End Enum
-
-'---------------------------------------------------------------------------------------
-' Proc  : Function FileExists
-' Date  : 10/10/2012
-' Type  : Boolean
-' Desc  : Checks if a file exists
-' Ex    : FileExists "C:\autoexec.bat"
-'---------------------------------------------------------------------------------------
-Function FileExists(ByVal sPath As String) As Boolean
-    'Remove trailing backslash
-    If InStr(Len(sPath), sPath, "\") > 0 Then sPath = Left(sPath, Len(sPath) - 1)
-    'Check to see if the directory exists and return true/false
-    If Dir(sPath, vbDirectory) <> "" Then FileExists = True
-End Function
-
-'---------------------------------------------------------------------------------------
-' Proc  : Function FolderExists
-' Date  : 10/10/2012
-' Type  : Boolean
-' Desc  : Checks if a folder exists
-' Ex    : FolderExists "C:\Program Files\"
-'---------------------------------------------------------------------------------------
-Function FolderExists(ByVal sPath As String) As Boolean
-    'Add trailing backslash
-    If InStr(Len(sPath), sPath, "\") = 0 Then sPath = sPath & "\"
-    'If the folder exists return true
-    If Dir(sPath, vbDirectory) <> "" Then FolderExists = True
-End Function
-
-'---------------------------------------------------------------------------------------
-' Proc  : Sub RecMkDir
-' Date  : 10/10/2012
-' Desc  : Creates an entire directory tree
-' Ex    : RecMkDir "C:\Dir1\Dir2\Dir3\"
-'---------------------------------------------------------------------------------------
-Sub RecMkDir(ByVal sPath As String)
-    Dim sDirArray() As String   'Folder names
-    Dim sDrive As String        'Base drive
-    Dim sNewPath As String      'Path builder
-    Dim i As Long               'Counter
-
-    'Add trailing slash
-    If Right(sPath, 1) <> "\" Then
-        sPath = sPath & "\"
-    End If
-
-    'Split at each \
-    sDirArray = Split(sPath, "\")
-    sDrive = sDirArray(0) & "\"
-
-    'Loop through each directory
-    For i = 1 To UBound(sDirArray) - 1
-        If Len(sNewPath) = 0 Then
-            sNewPath = sDrive & sNewPath & sDirArray(i) & "\"
-        Else
-            sNewPath = sNewPath & sDirArray(i) & "\"
-        End If
-
-        If Not FolderExists(sNewPath) Then
-            MkDir sNewPath
-        End If
-    Next
-End Sub
-
-'---------------------------------------------------------------------------------------
-' Proc  : Sub Email
-' Date  : 10/11/2012
-' Desc  : Sends an email
-' Ex    : Email SendTo:=email@example.com, Subject:="example email", Body:="Email Body"
-'---------------------------------------------------------------------------------------
-Sub Email(SendTo As String, Optional CC As String, Optional BCC As String, Optional Subject As String, Optional Body As String, Optional Attachment As Variant)
-    Dim s As Variant              'Attachment string if array is passed
-    Dim Mail_Object As Variant    'Outlook application object
-    Dim Mail_Single As Variant    'Email object
-
-    Set Mail_Object = CreateObject("Outlook.Application")
-    Set Mail_Single = Mail_Object.CreateItem(0)
-
-    With Mail_Single
-        'Add attachments
-        Select Case TypeName(Attachment)
-            Case "Variant()"
-                For Each s In Attachment
-                    If s <> Empty Then
-                        If FileExists(s) = True Then
-                            Mail_Single.attachments.Add s
-                        End If
-                    End If
-                Next
-            Case "String"
-                If Attachment <> Empty Then
-                    If FileExists(Attachment) = True Then
-                        Mail_Single.attachments.Add Attachment
-                    End If
-                End If
-        End Select
-
-        'Setup email
-        .Subject = Subject
-        .To = SendTo
-        .CC = CC
-        .BCC = BCC
-        .HTMLbody = Body
-        On Error GoTo SEND_FAILED
-        .Send
-        On Error GoTo 0
-    End With
-
-    'Give the email time to send
-    Sleep 1500
-    Exit Sub
-
-SEND_FAILED:
-    With Mail_Single
-        MsgBox "Mail to '" & .To & "' could not be sent."
-        .Delete
-    End With
-    Resume Next
-End Sub
 
 '---------------------------------------------------------------------------------------
 ' Proc  : Sub ImportGaps
@@ -380,29 +256,6 @@ CREATE_INFO:
 End Sub
 
 '---------------------------------------------------------------------------------------
-' Proc : DeleteFile
-' Date : 3/19/2013
-' Desc : Deletes a file
-'---------------------------------------------------------------------------------------
-Sub DeleteFile(FileName As String, Optional LogEntry As Boolean = False)
-    On Error GoTo File_Error
-    Kill FileName
-
-    If LogEntry = True Then
-        FillInfo FunctionName:="DeleteFile", _
-                 Parameters:=FileName, _
-                 Result:="Complete"
-    End If
-    Exit Sub
-
-File_Error:
-    If LogEntry = True Then
-        FillInfo FunctionName:="DeleteFile", _
-                 Result:="Err #: " & Err.Number
-    End If
-End Sub
-
-'---------------------------------------------------------------------------------------
 ' Proc : GetWorkbookPath
 ' Date : 3/19/2013
 ' Desc : Gets the full path of ThisWorkbook
@@ -494,14 +347,14 @@ Sub Import473(Destination As Range, Optional Branch As String = "3615")
     Dim sPath As String
     Dim FileName As String
     Dim AlertStatus As Boolean
-                       
+
     FileName = "473 " & Format(Date, "yyyy-mm-dd") & ".xlsx"
     sPath = "\\br3615gaps\gaps\" & Branch & " 473 Download\" & FileName
     AlertStatus = Application.DisplayAlerts
 
     If FileExists(sPath) Then
         Workbooks.Open sPath
-        
+
         ActiveSheet.UsedRange.Copy Destination:=Destination
 
         Application.DisplayAlerts = False
