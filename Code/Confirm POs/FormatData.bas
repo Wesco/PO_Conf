@@ -11,12 +11,12 @@ Sub FilterPOList()
     TotalRows = ActiveSheet.UsedRange.Rows.Count
 
     'Add promise dates
-    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:Z,24,FALSE)),""History"")"
+    Range(Cells(1, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A1,'473'!C:AC,27,FALSE)),""History"")"
     Range(Cells(1, 2), Cells(TotalRows, 2)).Value = Range(Cells(1, 2), Cells(TotalRows, 2)).Value
     Range(Cells(1, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
     
     'Add Qty Received
-    Range(Cells(1, 3), Cells(TotalRows, 3)).Formula = "=IFERROR(VLOOKUP(A1,'473'!C:AB,26,FALSE),0)"
+    Range(Cells(1, 3), Cells(TotalRows, 3)).Formula = "=IFERROR(VLOOKUP(A1,'473'!C:AE,29,FALSE),0)"
     Range(Cells(1, 3), Cells(TotalRows, 3)).Value = Range(Cells(1, 3), Cells(TotalRows, 3)).Value
     
     'Add column headers
@@ -81,29 +81,29 @@ Sub CreatePOConf()
     End If
 
     'Created
-    If Trim(Sheets("473").Range("J1").Value) = "PO DATE" Then
-        Range(Cells(2, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:J,8,FALSE)),"""")"
+    If Trim(Sheets("473").Range("L1").Value) = "PO DATE" Then
+        Range(Cells(2, 2), Cells(TotalRows, 2)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:L,10,FALSE)),"""")"
         Range(Cells(2, 2), Cells(TotalRows, 2)).Value = Range(Cells(2, 2), Cells(TotalRows, 2)).Value
         Range(Cells(2, 2), Cells(TotalRows, 2)).NumberFormat = "mmm-dd"
     Else
-        Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""J1"").Value != ""PO DATE""."
+        Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""L1"").Value != ""PO DATE""."
     End If
 
     'Supplier #
-    If Trim(Sheets("473").Range("G1").Value) = "SUPPLIER" Then
-        Range(Cells(2, 3), Cells(TotalRows, 3)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:G,5,FALSE)),"""")"
+    If Trim(Sheets("473").Range("I1").Value) = "SUPPLIER" Then
+        Range(Cells(2, 3), Cells(TotalRows, 3)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:I,7,FALSE)),"""")"
         Range(Cells(2, 3), Cells(TotalRows, 3)).NumberFormat = "@"
         Range(Cells(2, 3), Cells(TotalRows, 3)).Value = Range(Cells(2, 3), Cells(TotalRows, 3)).Value
     Else
-        Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""G1"").Value != ""SUPPLIER""."
+        Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""I1"").Value != ""SUPPLIER""."
     End If
 
     'Supplier Name
-    If Trim(Sheets("473").Range("AJ1").Value) = "SUPPLIER NAME" Then
-        Range(Cells(2, 4), Cells(TotalRows, 4)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:AJ,34,FALSE)),"""")"
+    If Trim(Sheets("473").Range("AO1").Value) = "SUPPLIER NAME" Then
+        Range(Cells(2, 4), Cells(TotalRows, 4)).Formula = "=IFERROR(TRIM(VLOOKUP(A2,'473'!C:AO,39,FALSE)),"""")"
         Range(Cells(2, 4), Cells(TotalRows, 4)).Value = Range(Cells(2, 4), Cells(TotalRows, 4)).Value
     Else
-        Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""AJ1"").Value != ""SUPPLIER NAME""."
+        Err.Raise 50000, "CreatePOConf", "Sheets(""473"").Range(""AO1"").Value != ""SUPPLIER NAME""."
     End If
 
     'Contact
