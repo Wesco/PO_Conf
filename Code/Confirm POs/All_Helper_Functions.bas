@@ -494,13 +494,14 @@ Sub Import473(Destination As Range, Optional Branch As String = "3615")
     Dim sPath As String
     Dim FileName As String
     Dim AlertStatus As Boolean
-
+                       
     FileName = "473 " & Format(Date, "yyyy-mm-dd") & ".xlsx"
     sPath = "\\br3615gaps\gaps\" & Branch & " 473 Download\" & FileName
     AlertStatus = Application.DisplayAlerts
 
     If FileExists(sPath) Then
         Workbooks.Open sPath
+        
         ActiveSheet.UsedRange.Copy Destination:=Destination
 
         Application.DisplayAlerts = False
