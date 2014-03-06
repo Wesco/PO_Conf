@@ -7,28 +7,31 @@ Sub Main()
     Dim Branch As String
 
     Application.ScreenUpdating = False
-    
+
     On Error GoTo Main_Err
-    
+    'Prompt user for branch number
     Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
+
+    'Get 473 report for the branch
     Import473 ThisWorkbook.Sheets("473").Range("A1"), Branch
     Format473
+
+    'Get the supplier contact master
     ImportSupplierContacts ThisWorkbook.Sheets("Contacts").Range("A1")
+
+    'Create the open po report
     CreatePOList
     CreatePOConf
-    
-
     SortPOConf
-    Sheets("PO Conf").Select
-    Clean
-    Application.ScreenUpdating = True
 
-    MsgBox "Complete!"
-    
     On Error GoTo 0
+
+    Application.ScreenUpdating = True
+    MsgBox "Complete!"
     Exit Sub
 
 Main_Err:
+    Clean
     MsgBox Err.Description, vbOKOnly, "Error: " & Err.Source
     Exit Sub
 End Sub
