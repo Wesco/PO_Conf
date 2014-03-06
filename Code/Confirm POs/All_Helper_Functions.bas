@@ -646,7 +646,7 @@ Sub ImportSupplierContacts(Destination As Range)
 
     Workbooks.Open sPath
     ActiveSheet.UsedRange.Copy Destination:=Destination
-
+    ActiveSheet.AutoFilterMode = False
     Application.DisplayAlerts = False
     ActiveWorkbook.Close
     Application.DisplayAlerts = PrevDispAlerts
