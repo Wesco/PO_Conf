@@ -12,9 +12,11 @@ Sub Main()
     
     Branch = InputBox(Prompt:="Branch:", Title:="Enter your branch number")
     Import473 ThisWorkbook.Sheets("473").Range("A1"), Branch
+    Format473
     ImportSupplierContacts ThisWorkbook.Sheets("Contacts").Range("A1")
+    CreatePOList
     CreatePOConf
-
+    
 
     SortPOConf
     Sheets("PO Conf").Select
