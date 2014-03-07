@@ -23,7 +23,6 @@ Sub Main()
     CreatePOList
     CreatePOConf
     SortPOConf
-
     On Error GoTo 0
 
     Application.ScreenUpdating = True
