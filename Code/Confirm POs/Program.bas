@@ -1,6 +1,6 @@
 Attribute VB_Name = "Program"
 Option Explicit
-Public Const VersionNumber As String = "1.1.0"
+Public Const VersionNumber As String = "1.2.0"
 Public Const RepositoryName As String = "PO_Conf"
 
 Sub Main()
