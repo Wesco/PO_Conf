@@ -14,8 +14,23 @@ Sub CreatePOList()
 
     'Remove duplicate PO numbers
     Sheets("PO Conf").Select
-    TotalRows = ActiveSheet.UsedRange.Rows.Count
     Range("A:A").RemoveDuplicates 1, xlYes
+    TotalRows = Rows(Rows.Count).End(xlUp).Row
+
+    'Get promise dates
+    [B1].Value = "Promised"
+    Range("B2:B" & TotalRows).Formula = "=IFERROR(VLOOKUP(A2,473!C:AC,27,FALSE),"""")"
+    Range("B2:B" & TotalRows).NumberFormat = "mm/dd/yyyy"
+    Range("B2:B" & TotalRows).Value = Range("B2:B" & TotalRows).Value
+
+    'Remove items with future promise dates
+    ActiveSheet.UsedRange.AutoFilter Field:=2, Criteria1:=">=" & Date
+    Cells.Delete
+
+    'Clean Up Data
+    Columns(2).Delete
+    Rows(1).Insert
+    [A1].Value = "PO #"
 End Sub
 
 Sub CreatePOConf()
@@ -23,10 +38,10 @@ Sub CreatePOConf()
 
     Sheets("PO Conf").Select
     TotalRows = Rows(Rows.Count).End(xlUp).Row
-    
+
     'Insert a column for the branch
     Columns(1).Insert
-    
+
     'Add Column Headers
     [A1].Value = "Branch"
     [B1].Value = "PO #"
@@ -43,7 +58,7 @@ Sub CreatePOConf()
         .Font.Bold = True
         .HorizontalAlignment = xlCenter
     End With
-    
+
     'Branch
     Range("A2:A" & TotalRows).Value = Sheets("473").Range("A2").Value
 
@@ -51,12 +66,12 @@ Sub CreatePOConf()
     Range("C2:C" & TotalRows).Formula = "=IFERROR(TRIM(VLOOKUP(B2,'473'!C:L,10,FALSE)),"""")"
     Range("C2:C" & TotalRows).Value = Range("C2:C" & TotalRows).Value
     Range("C2:C" & TotalRows).NumberFormat = "mmm dd, yyyy"
-    
+
     'Promise Date
     Range("D2:D" & TotalRows).Formula = "=IFERROR(TRIM(VLOOKUP(B2,'473'!C:AC,27,FALSE)),"""")"
     Range("D2:D" & TotalRows).Value = Range("D2:D" & TotalRows).Value
     Range("D2:D" & TotalRows).NumberFormat = "mmm dd, yyyy"
-    
+
     'SIM
     Range("E2:E" & TotalRows).Formula = "=IFERROR(TRIM(SUBSTITUTE(VLOOKUP(B2,'473'!C:Y,23,FALSE),""-"","""")),"""")"
     Range("E2:E" & TotalRows).NumberFormat = "@"
@@ -69,15 +84,15 @@ Sub CreatePOConf()
     'Supplier Name
     Range("G2:G" & TotalRows).Formula = "=IFERROR(TRIM(VLOOKUP(B2,473!C:AO,39,FALSE)),"""")"
     Range("G2:G" & TotalRows).Value = Range("G2:G" & TotalRows).Value
-    
+
     'Supplier Number
     Range("H2:H" & TotalRows).Formula = "=IFERROR(TRIM(VLOOKUP(B2,473!C:I,7,FALSE)),"""")"
     Range("H2:H" & TotalRows).NumberFormat = "@"
     Range("H2:H" & TotalRows).Value = Range("H2:H" & TotalRows).Value
-    
+
     'Email
     Range("I2:I" & TotalRows).Formula = "=IFERROR(TRIM(VLOOKUP(H2,Contacts!A:B,2,FALSE)),"""")"
     Range("I2:I" & TotalRows).Value = Range("I2:I" & TotalRows).Value
-    
+
     ActiveSheet.UsedRange.Columns.AutoFit
 End Sub
