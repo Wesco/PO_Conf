@@ -65,13 +65,13 @@ Sub SendMail()
     For i = 2 To TotalRows
         'Column H contains the supplier number
         PrevCell = Range("H" & i - 1).Value
-        CurrCell = Cells("H" & i).Value
-        NextCell = Cells("H" & i + 1).Value
+        CurrCell = Range("H" & i).Value
+        NextCell = Range("H" & i + 1).Value
 
         'If there is only line for the current supplier
         If CurrCell <> PrevCell And CurrCell <> NextCell Then
             Branch = Range("A" & i).Value
-            PONumber = Range("B" & i).Value
+            PONumber = Right("000000" & Range("B" & i).Value, 6)
             Created = Format(Range("C" & i).Value, "mmm dd, yyyy")
             Promised = Format(Range("D" & i).Value, "mmm dd, yyyy")
             SimNum = Range("E" & i).Value
@@ -90,13 +90,7 @@ Sub SendMail()
 
             'Send email if a contact was found
             If Contact <> "" Then
-                If Promised <> "" Then
-                    If CDate(Promised) <= Date Then
-                        Email Contact, Subject:=Subject, Body:=EmailHeader & Body & EmailFooter
-                    End If
-                Else
-                    Email Contact, Subject:=Subject, Body:=EmailHeader & Body & EmailFooter
-                End If
+                Email Contact, Subject:=Subject, Body:=EmailHeader & Body & EmailFooter
             End If
 
             'Clear email body
@@ -113,7 +107,7 @@ Sub SendMail()
             'Loop through each line for the current supplier
             For j = StartRow To EndRow
                 Branch = Range("A" & j).Value
-                PONumber = Range("B" & j).Value
+                PONumber = Right("000000" & Range("B" & j).Value, 6)
                 Created = Format(Range("C" & j).Value, "mmm dd, yyyy")
                 Promised = Format(Range("D" & j).Value, "mmm dd, yyyy")
                 SimNum = Range("E" & j).Value
@@ -121,7 +115,8 @@ Sub SendMail()
                 SuppName = Range("G" & j).Value
                 Contact = Range("I" & j).Value
                 Subject = "Please send estimated ship dates"
-                Body = "<tr>" & _
+                Body = Body & _
+                       "<tr>" & _
                        "<td>" & Branch & "-" & PONumber & "</td>" & _
                        "<td>" & Created & "</td>" & _
                        "<td>" & Promised & "</td>" & _
@@ -130,43 +125,16 @@ Sub SendMail()
                        "<td>" & SuppName & "</td>" & _
                        "</tr>"
             Next
-            
+
             'Send email if a contact was found
             If Contact <> "" Then
-                If Promised <> "" Then
-                    If CDate(Promised) <= Date Then
-                        Email Contact, Subject:=Subject, Body:=EmailHeader & Body & EmailFooter
-                    End If
-                Else
-                    Email Contact, Subject:=Subject, Body:=EmailHeader & Body & EmailFooter
-                End If
+                Email Contact, Subject:=Subject, Body:=EmailHeader & Body & EmailFooter
             End If
 
             'Clear email body
             Body = ""
         End If
     Next
-    
+
     MsgBox "Complete!"
 End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
