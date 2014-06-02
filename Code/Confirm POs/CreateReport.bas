@@ -3,6 +3,8 @@ Option Explicit
 
 Sub CreatePOList()
     Dim TotalRows As Long
+    Dim TotalCols As Integer
+    Dim i As Long
 
     Sheets("473").Select
     TotalRows = ActiveSheet.UsedRange.Rows.Count
@@ -10,10 +12,26 @@ Sub CreatePOList()
     'Filter for all non-stock POs and copy them to another sheet
     ActiveSheet.UsedRange.AutoFilter Field:=24, Criteria1:="=X"
     Range("C1:C" & TotalRows).Copy Destination:=Sheets("PO Conf").Range("A1")
+    Range("AD1:AD" & TotalRows).Copy Destination:=Sheets("PO Conf").Range("B1")
+    Range("AE1:AE" & TotalRows).Copy Destination:=Sheets("PO Conf").Range("C1")
     ActiveSheet.AutoFilterMode = False
 
-    'Remove duplicate PO numbers
     Sheets("PO Conf").Select
+    TotalRows = Rows(Rows.Count).End(xlUp).Row
+    TotalCols = Columns(Columns.Count).End(xlToLeft).Column
+    
+    'Remove received items
+    For i = TotalRows To 2 Step -1
+        'If QTY ORD = QTY REC
+        If Range("B" & i).Value = Range("C" & i).Value Then
+            Rows(i).Delete
+        End If
+    Next
+    
+    'Remove QTY ORD and QTY REC
+    Columns("B:C").Delete
+
+    'Remove duplicate PO numbers
     Range("A:A").RemoveDuplicates 1, xlYes
     TotalRows = Rows(Rows.Count).End(xlUp).Row
 

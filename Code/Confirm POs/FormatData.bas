@@ -29,14 +29,14 @@ Sub SortPOConf()
     Dim vRng As Variant
     Dim TotalRows As Long
     Dim TotalCols As Integer
-    
+
     Sheets("PO Conf").Select
 
     TotalRows = Rows(Rows.Count).End(xlUp).Row
     TotalCols = ActiveSheet.UsedRange.Columns.Count
 
     'Sort by PO creation date, oldest to newest
-    With ActiveWorkbook.Worksheets("PO Conf").Sort
+    With ActiveWorkbook.ActiveSheet.Sort
         .SortFields.Clear
         .SortFields.Add Key:=Range("H1"), _
                         SortOn:=xlSortOnValues, _
